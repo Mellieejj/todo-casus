@@ -1,14 +1,13 @@
 <script lang="ts" setup>
 import ToDoList from '@/components/ToDoList.vue';
-import { type Todo, useTodosStore } from '@/stores/todos.ts';
+import { useTodosStore } from '@/stores/todos.ts';
 import { storeToRefs } from 'pinia';
 import { computed } from 'vue';
 import HeaderColumn from '@/components/general/HeaderColumn.vue';
 import AddNewTodo from '@/components/AddNewTodo.vue';
 
 const todoStore = useTodosStore();
-
-const { todos } = storeToRefs(todoStore);
+const { sortedTodos: todos } = storeToRefs(todoStore);
 
 const filteredTodos = computed(() => {
 	const finishedTodos = todos.value.filter(t => t.finished);
@@ -16,12 +15,6 @@ const filteredTodos = computed(() => {
 	const notFinishedTodos = todos.value.filter(t => !t.finished);
 	return { finishedTodos, notFinishedTodos };
 });
-
-const onRemoveClick = (todo: Todo) => {
-	if (window.confirm(`Weet je zeker dat je '${todo.title}' wilt verwijderen?`)) {
-		todoStore.removeTodo(todo.id);
-	}
-};
 </script>
 
 <template>
@@ -35,13 +28,16 @@ const onRemoveClick = (todo: Todo) => {
 				<HeaderColumn title="To Do" />
 				<ToDoList
 					:todos="filteredTodos.notFinishedTodos"
-					emptyListText="🎉 Gefeliciteerd alle todo's zijn afgevinkt! "
-				/>
+					emptyListText="🎉 Gefeliciteerd alle todo's zijn afgevinkt!"
+					listName="todo" />
 			</div>
 
 			<div>
 				<HeaderColumn title="Finished" />
-				<ToDoList :todos="filteredTodos.finishedTodos" emptyListText="Nog geen todo's afgevinkt! 🙁" />
+				<ToDoList
+					:todos="filteredTodos.finishedTodos"
+					emptyListText="Nog geen todo's afgevinkt! 🙁"
+					listName="finished" />
 			</div>
 		</div>
 	</div>

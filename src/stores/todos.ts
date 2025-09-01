@@ -1,5 +1,6 @@
-import { ref } from 'vue';
+import { computed, ref } from 'vue';
 import { defineStore } from 'pinia';
+
 import { DateTime } from 'luxon';
 
 export const useTodosStore = defineStore('todos', () => {
@@ -7,18 +8,24 @@ export const useTodosStore = defineStore('todos', () => {
 
 	const todos = ref<Todo[]>([
 		{
-			id: id,
+			id: id++,
 			title: 'Test Todo',
 			createdAtDate: DateTime.now(),
 			finished: false,
 		},
 		{
-			id: ++id,
+			id: id++,
 			title: 'Test Todo 2',
-			createdAtDate: DateTime.now(),
+			createdAtDate: DateTime.now().minus({ days: 10 }),
+			finished: false,
+			deadlineDate: DateTime.now().minus({ days: 2 }),
+		},
+		{
+			id: id++,
+			title: 'Test Todo 3',
+			createdAtDate: DateTime.now().minus({ days: 1 }),
 			finished: true,
-			finishedAtDate: DateTime.now(),
-			deadlineDate: DateTime.now().plus({ days: 2 }),
+			finishedAtDate: DateTime.now().minus({ days: 2 }),
 		},
 	]);
 
@@ -30,11 +37,16 @@ export const useTodosStore = defineStore('todos', () => {
 			createdAtDate: DateTime.now(),
 			finished: false,
 		};
+
 		todos.value.push(newTodo);
 	};
 
 	const removeTodo = (id: number) => {
-		todos.value = todos.value.filter(t => t.id !== id);
+		const findTodo = todos.value.find(t => t.id === id);
+
+		if (findTodo && confirm(`Weet je zeker dat je '${findTodo.title}' wilt verwijderen?`)) {
+			todos.value = todos.value.filter(t => t.id !== id);
+		}
 	};
 
 	const toggleFinished = (id: number) => {
@@ -42,10 +54,67 @@ export const useTodosStore = defineStore('todos', () => {
 			if (t.id === id) {
 				t.finished = !t.finished;
 			}
+
 			return t;
 		});
 	};
-	return { todos, addNewTodo, removeTodo, toggleFinished };
+
+	const startDraggingTodo = (event: DragEvent, item: Todo) => {
+		if (event.dataTransfer) {
+			event.dataTransfer.dropEffect = 'move';
+			event.dataTransfer.effectAllowed = 'move';
+			event.dataTransfer.setData('itemId', item.id.toString());
+		}
+	};
+
+	const onDropTodo = (event: DragEvent, listName: 'finished' | 'todo') => {
+		const id = Number(event.dataTransfer?.getData('itemId'));
+		const todoItem = todos.value.find(t => t.id === id);
+
+		return todos.value.map(t => {
+			if (t.id === id) {
+				if (listName === 'finished') {
+					t.finished = true;
+					t.finishedAtDate = DateTime.now();
+				} else {
+					t.deadlineDate = undefined;
+					t.finished = false;
+				}
+			}
+
+			return t;
+		});
+	};
+
+	const sortedTodos = computed(() => {
+		return todos.value.sort((todoA, todoB) => {
+			// Sort todos with finished state before those without
+			if (todoA.finishedAtDate && todoB.finishedAtDate) {
+				return todoA.finishedAtDate.toMillis() - todoB.finishedAtDate.toMillis();
+			}
+			// Sort todos with deadline before those without
+			if (todoA.deadlineDate && !todoB.deadlineDate) {
+				return -1;
+			}
+
+			if (!todoA.deadlineDate && todoB.deadlineDate) {
+				return 1;
+			}
+
+			// If both have deadlines, sort by deadline
+			if (todoA.deadlineDate && todoB.deadlineDate) {
+				const deadlineDiff = todoA.deadlineDate!.toMillis() - todoB.deadlineDate!.toMillis();
+				if (deadlineDiff !== 0) {
+					return deadlineDiff;
+				}
+			}
+
+			// Fallback: sort by createdAtDate
+			return todoA.createdAtDate.toMillis() - todoB.createdAtDate.toMillis();
+		});
+	});
+
+	return { sortedTodos, addNewTodo, removeTodo, toggleFinished, startDraggingTodo, onDropTodo };
 });
 
 export type Todo = {
