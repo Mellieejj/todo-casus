@@ -34,8 +34,7 @@ export const useTodosStore = defineStore('todos', () => {
 	};
 
 	const removeTodo = (id: number) => {
-		console.log(id)
-		todos.value.filter(t => t.id !== id);
+		todos.value = todos.value.filter(t => t.id !== id);
 	};
 
 	const toggleFinished = (id: number) => {

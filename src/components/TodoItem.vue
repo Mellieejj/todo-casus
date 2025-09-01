@@ -5,7 +5,6 @@ import { DateTime } from 'luxon';
 import { ImBin, ImCheckboxChecked, ImCheckboxUnchecked } from 'vue-icons-plus/im';
 
 defineProps<{ todo: Todo }>();
-const emit = defineEmits<{e: 'click', todo}>()
 const { toggleFinished, removeTodo } = useTodosStore();
 
 </script>
@@ -26,7 +25,7 @@ const { toggleFinished, removeTodo } = useTodosStore();
 			</p>
 			<p v-else class="text-xs text-slate-400">Geen deadline 🎉</p>
 
-			<button class="flex items-center gap-2 rounded-xl hover:bg-red-50 p-4 text-sm" title="Verwijderen">
+			<button class="flex items-center gap-2 rounded-xl hover:bg-red-50 p-4 text-sm" title="Verwijderen" @click="removeTodo(todo.id)">
 				<ImBin class="text-red-300" size="16" />
 			</button>
 		</div>
