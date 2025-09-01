@@ -1,21 +1,20 @@
-# vue-variant
+# To Do Web App
 
-This template should help get you started developing with Vue 3 in Vite.
+_**Functies**_: 
+- Todo heeft vervaldatum
+- Todo gedraagt zich ook naar de vervaldatum
+- Todo's en Afgeronde todos lijst
+- Drag and Drop verplaatsen en afvinken mogelijk
+- Tailwindcss gebruikt voor styling
+  - cn util gemaakt voor het samenvoegen van conditional classes
 
-## Recommended IDE Setup
+**_Improvements_**:
+- Persistence van state in LocalStorage opslaan
+  - loader tonen wanneer localStorage state wordt opgehaald
+  - overstappen naar vuex ? ipv pinia-plugin-persistedstate?
+- Mooiere Alert inbouwen
+- Filter opties inbouwen
 
-[VSCode](https://code.visualstudio.com/) + [Volar](https://marketplace.visualstudio.com/items?itemName=Vue.volar) (and
-disable Vetur).
-
-## Type Support for `.vue` Imports in TS
-
-TypeScript cannot handle type information for `.vue` imports by default, so we replace the `tsc` CLI with `vue-tsc` for
-type checking. In editors, we need [Volar](https://marketplace.visualstudio.com/items?itemName=Vue.volar) to make the
-TypeScript language service aware of `.vue` types.
-
-## Customize configuration
-
-See [Vite Configuration Reference](https://vite.dev/config/).
 
 ## Project Setup
 

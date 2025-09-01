@@ -77,7 +77,7 @@ export const useTodosStore = defineStore('todos', () => {
 					t.finished = true;
 					t.finishedAtDate = DateTime.now();
 				} else {
-					t.deadlineDate = undefined;
+					t.finishedAtDate = undefined;
 					t.finished = false;
 				}
 			}
