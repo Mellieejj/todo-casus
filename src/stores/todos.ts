@@ -114,7 +114,30 @@ export const useTodosStore = defineStore('todos', () => {
 		});
 	});
 	return { sortedTodos, addNewTodo, removeTodo, toggleFinished, startDraggingTodo, onDropTodo };
-});
+},
+	{
+		persist: {
+			key: 'todos',
+			storage: localStorage,
+			serializer: {
+				serialize(value) {
+					return JSON.stringify(value, (key, val) => {
+						if (val?.isLuxonDateTime) {
+							return { _luxon: true, iso: val.toISO() };
+						}
+						return val;
+					});
+				},
+				deserialize(value) {
+					return JSON.parse(value, (key, val) => {
+						if (val?._luxon) {
+							return DateTime.fromISO(val.iso);
+						}
+						return val;
+					});
+				},
+			},
+		}});
 
 export type Todo = {
 	id: number;
