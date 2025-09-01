@@ -113,7 +113,6 @@ export const useTodosStore = defineStore('todos', () => {
 			return todoA.createdAtDate.toMillis() - todoB.createdAtDate.toMillis();
 		});
 	});
-
 	return { sortedTodos, addNewTodo, removeTodo, toggleFinished, startDraggingTodo, onDropTodo };
 });
 
