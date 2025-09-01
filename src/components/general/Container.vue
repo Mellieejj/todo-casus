@@ -1,5 +1,5 @@
 <script setup lang="ts">
-const {customClasses} = defineProps<{customClasses?: string}>()
+const { customClasses } = defineProps<{ customClasses?: string }>();
 
 const classes = `w-full rounded-xl flex flex-col ${customClasses ? customClasses : ''}`;
 </script>
