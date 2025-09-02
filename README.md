@@ -5,13 +5,16 @@ _**Functies**_:
 - Todo gedraagt zich ook naar de vervaldatum
 - Todo's en Afgeronde todos lijst
 - Drag and Drop verplaatsen en afvinken mogelijk
+- Save Todo's in LocalStorage
 - Tailwindcss gebruikt voor styling
   - cn util gemaakt voor het samenvoegen van conditional classes
+ 
+
 
 **_Improvements_**:
-- Persistence van state in LocalStorage opslaan
+~~- Persistence van state in LocalStorage opslaan~~
   - loader tonen wanneer localStorage state wordt opgehaald
-  - overstappen naar vuex ? ipv pinia-plugin-persistedstate?
+
 - Mooiere Alert inbouwen
 - Filter opties inbouwen
 
