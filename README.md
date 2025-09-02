@@ -12,7 +12,7 @@ _**Functies**_:
 
 
 **_Improvements_**:
-~~- Persistence van state in LocalStorage opslaan~~
+- ~~Persistence van state in LocalStorage opslaan~~
   - loader tonen wanneer localStorage state wordt opgehaald
 
 - Mooiere Alert inbouwen
