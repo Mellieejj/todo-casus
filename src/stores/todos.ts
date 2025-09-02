@@ -2,32 +2,14 @@ import { computed, ref } from 'vue';
 import { defineStore } from 'pinia';
 
 import { DateTime } from 'luxon';
+import { retrieveTodosFromStorage, saveToLocalStorage } from '@/util/localStorage.ts';
 
 export const useTodosStore = defineStore('todos', () => {
 	let id = 0;
 
-	const todos = ref<Todo[]>([
-		{
-			id: id++,
-			title: 'Test Todo',
-			createdAtDate: DateTime.now(),
-			finished: false,
-		},
-		{
-			id: id++,
-			title: 'Test Todo 2',
-			createdAtDate: DateTime.now().minus({ days: 10 }),
-			finished: false,
-			deadlineDate: DateTime.now().minus({ days: 2 }),
-		},
-		{
-			id: id++,
-			title: 'Test Todo 3',
-			createdAtDate: DateTime.now().minus({ days: 1 }),
-			finished: true,
-			finishedAtDate: DateTime.now().minus({ days: 2 }),
-		},
-	]);
+	const todos = ref<Todo[]>([]);
+
+	todos.value = retrieveTodosFromStorage();
 
 	const addNewTodo = (todo: { title: string; deadlineDate?: string }) => {
 		const newTodo: Todo = {
@@ -87,7 +69,7 @@ export const useTodosStore = defineStore('todos', () => {
 	};
 
 	const sortedTodos = computed(() => {
-		return todos.value.sort((todoA, todoB) => {
+		const sortedTodos = todos.value.sort((todoA, todoB) => {
 			// Sort todos with finished state before those without
 			if (todoA.finishedAtDate && todoB.finishedAtDate) {
 				return todoA.finishedAtDate.toMillis() - todoB.finishedAtDate.toMillis();
@@ -112,7 +94,10 @@ export const useTodosStore = defineStore('todos', () => {
 			// Fallback: sort by createdAtDate
 			return todoA.createdAtDate.toMillis() - todoB.createdAtDate.toMillis();
 		});
+		saveToLocalStorage(sortedTodos);
+		return sortedTodos;
 	});
+
 	return { sortedTodos, addNewTodo, removeTodo, toggleFinished, startDraggingTodo, onDropTodo };
 });
 
@@ -123,9 +108,4 @@ export type Todo = {
 	createdAtDate: DateTime;
 	finished: boolean;
 	finishedAtDate?: DateTime;
-};
-
-export type TodoFormFields = {
-	title: string;
-	deadlineDate?: DateTime;
 };
